@@ -8,7 +8,7 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 bot = Bot(token=TOKEN)
-dp = Dispatcher(bot)
+dp = Dispatcher()
 
 accounts = ["10k 💰", "25k 💼", "50k 🧳", "100k 🏦", "200k 🚀"]
 risks = ["0.3% 🧠", "0.5% 🧩", "1% 📈", "2% 🔥"]
@@ -88,7 +88,7 @@ async def new_calculation_handler(message: types.Message):
     await start_handler(message)
 
 async def main():
-    await dp.start_polling(bot, skip_updates=True)
+    await dp.start_polling(dp, bot, skip_updates=True)
 
 if __name__ == '__main__':
     asyncio.run(main())
