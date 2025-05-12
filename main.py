@@ -15,7 +15,7 @@ risks = ["0.3% 🧠", "0.5% 🧩", "1% 📈", "2% 🔥"]
 pairs = ["EURUSD 🇪🇺🇺🇸", "GBPUSD 🇬🇧🇺🇸", "EURGBP 🇪🇺🇬🇧", "XAUUSD 🪙", "XAGUSD 🧂"]
 
 user_data = {}
-new_calculation_button = KeyboardButton("Новый расчет 🔄")
+new_calculation_button = KeyboardButton(text="Новый расчет 🔄")
 
 def make_keyboard(options, add_back=False):
     keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
