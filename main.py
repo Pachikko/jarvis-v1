@@ -1,6 +1,7 @@
 import os
 import asyncio
-from aiogram import Bot, Dispatcher, types
+from aiogram import Bot, Dispatcher, types, F
+from aiogram.filters import Command
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from dotenv import load_dotenv
 
@@ -8,9 +9,9 @@ load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 bot = Bot(token=TOKEN)
-dp = Dispatcher()  # Теперь без передачи бота
+dp = Dispatcher()
 
-accounts = ["10k 💰", "25k 💼", "50k 🧳", "100k 🏦", "200k 🚀"]
+accounts = ["10k 💰", "25k 💼", "50k �", "100k 🏦", "200k 🚀"]
 risks = ["0.3% 🧠", "0.5% 🧩", "1% 📈", "2% 🔥"]
 pairs = ["EURUSD 🇪🇺🇺🇸", "GBPUSD 🇬🇧🇺🇸", "EURGBP 🇪🇺🇬🇧", "XAUUSD 🪙", "XAGUSD 🧂"]
 
@@ -24,22 +25,22 @@ def make_keyboard(options, add_back=False):
         keyboard.add(new_calculation_button)
     return keyboard
 
-@dp.message(commands=['start'])
+@dp.message(Command("start"))
 async def start_handler(message: types.Message):
     user_data[message.from_user.id] = {}
     await message.answer("Привет, я Jarvis V1 🤖\nВыбери сумму аккаунта:", reply_markup=make_keyboard(accounts))
 
-@dp.message(lambda msg: msg.text in accounts)
+@dp.message(F.text.in_(accounts))
 async def account_handler(message: types.Message):
     user_data[message.from_user.id]["account"] = int(message.text.split("k")[0]) * 1000
     await message.answer("Теперь выбери риск:", reply_markup=make_keyboard(risks))
 
-@dp.message(lambda msg: msg.text in risks)
+@dp.message(F.text.in_(risks))
 async def risk_handler(message: types.Message):
     user_data[message.from_user.id]["risk"] = float(message.text.split("%")[0]) / 100
     await message.answer("Выбери торговую пару:", reply_markup=make_keyboard(pairs))
 
-@dp.message(lambda msg: msg.text in pairs)
+@dp.message(F.text.in_(pairs))
 async def pair_handler(message: types.Message):
     user_data[message.from_user.id]["pair"] = message.text.split(" ")[0]
     await message.answer(f"Введи цену входа для пары {user_data[message.from_user.id]['pair']}:")
@@ -83,7 +84,7 @@ async def tp_handler(message: types.Message):
         if message.from_user.id in user_data:
             del user_data[message.from_user.id]
 
-@dp.message(lambda message: message.text == new_calculation_button.text)
+@dp.message(F.text == new_calculation_button.text)
 async def new_calculation_handler(message: types.Message):
     await start_handler(message)
 
@@ -92,7 +93,7 @@ async def unknown_message_handler(message: types.Message):
     await message.answer("Я не понимаю эту команду. Начните с /start")
 
 async def main():
-    await dp.start_polling(bot, skip_updates=True)  # Бот передается здесь
+    await dp.start_polling(bot)
 
 if __name__ == '__main__':
     asyncio.run(main())
