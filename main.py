@@ -65,10 +65,7 @@ async def tp_handler(message: types.Message):
         risk_amount = data["account"] * data["risk"]
         sl_distance = abs(data["entry"] - data["sl"])
         lot = round(risk_amount / sl_distance / 100 if "XAU" in data["pair"] or "XAG" in data["pair"] else risk_amount / (sl_distance * 10), 2)
-        await message.answer(f"🔢 Лот: {lot}
-📉 SL: {data['sl']}
-📈 TP: {data['tp']}
-Пара: {data['pair']}", reply_markup=types.ReplyKeyboardRemove())
+        await message.answer(f"🔢 Лот: {lot}\n📉 SL: {data['sl']}\n📈 TP: {data['tp']}\nПара: {data['pair']}", reply_markup=make_keyboard([new_calculation_button.text]))
         user_data.pop(message.from_user.id)
     except Exception:
         await message.answer("Ошибка при расчёте. Проверь входные данные.")
