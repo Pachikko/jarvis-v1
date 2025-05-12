@@ -2,7 +2,6 @@ import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
-from aiogram.utils.callback_data import CallbackData
 from dotenv import load_dotenv
 
 load_dotenv()
