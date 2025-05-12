@@ -23,8 +23,8 @@ def make_keyboard(options):
 @dp.message_handler(commands=['start'])
 async def start_handler(message: types.Message):
     user_data[message.from_user.id] = {}
-    await message.answer("Привет, я Jarvis V1 🤖
-Выбери сумму аккаунта:", reply_markup=make_keyboard(accounts))
+    await message.answer("Привет, я Jarvis V1 🤖\nВыбери сумму аккаунта:", reply_markup=make_keyboard(accounts))
+
 
 @dp.message_handler(lambda msg: msg.text in accounts)
 async def account_handler(message: types.Message):
