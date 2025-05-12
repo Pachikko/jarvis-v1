@@ -1,14 +1,14 @@
 import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from dotenv import load_dotenv
 
 load_dotenv()
 TOKEN = os.getenv("TOKEN")
 
 bot = Bot(token=TOKEN)
-dp = Dispatcher(bot)  # Исправлено: передаем бота в диспетчер
+dp = Dispatcher()  # Теперь без передачи бота
 
 accounts = ["10k 💰", "25k 💼", "50k 🧳", "100k 🏦", "200k 🚀"]
 risks = ["0.3% 🧠", "0.5% 🧩", "1% 📈", "2% 🔥"]
@@ -92,7 +92,7 @@ async def unknown_message_handler(message: types.Message):
     await message.answer("Я не понимаю эту команду. Начните с /start")
 
 async def main():
-    await dp.start_polling(bot, skip_updates=True)  # Исправлено: убрали лишний аргумент
+    await dp.start_polling(bot, skip_updates=True)  # Бот передается здесь
 
 if __name__ == '__main__':
     asyncio.run(main())
