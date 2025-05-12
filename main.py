@@ -2,6 +2,7 @@ import os
 import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
+from aiogram.filters import Command, Text
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -24,27 +25,27 @@ def make_keyboard(options, add_back=False):
         keyboard.add(new_calculation_button)
     return keyboard
 
-@dp.message(commands=['start'])
+@dp.message(Command(commands=['start']))
 async def start_handler(message: types.Message):
     user_data[message.from_user.id] = {}
     await message.answer("Привет, я Jarvis V1 🤖\nВыбери сумму аккаунта:", reply_markup=make_keyboard(accounts))
 
-@dp.message(lambda msg: msg.text in accounts)
+@dp.message(Text(text=accounts))
 async def account_handler(message: types.Message):
     user_data[message.from_user.id]["account"] = int(message.text.split("k")[0]) * 1000
     await message.answer("Теперь выбери риск:", reply_markup=make_keyboard(risks))
 
-@dp.message(lambda msg: msg.text in risks)
+@dp.message(Text(text=risks))
 async def risk_handler(message: types.Message):
     user_data[message.from_user.id]["risk"] = float(message.text.split("%")[0]) / 100
     await message.answer("Выбери торговую пару:", reply_markup=make_keyboard(pairs))
 
-@dp.message(lambda msg: msg.text in pairs)
+@dp.message(Text(text=pairs))
 async def pair_handler(message: types.Message):
     user_data[message.from_user.id]["pair"] = message.text.split(" ")[0]
     await message.answer(f"Введи цену входа для пары {user_data[message.from_user.id]['pair']}:")
 
-@dp.message(lambda msg: "entry" not in user_data.get(msg.from_user.id, {}))
+@dp.message(lambda message: "entry" not in user_data.get(message.from_user.id, {}))
 async def entry_handler(message: types.Message):
     try:
         user_data[message.from_user.id]["entry"] = float(message.text)
@@ -52,7 +53,7 @@ async def entry_handler(message: types.Message):
     except ValueError:
         await message.answer("Пожалуйста, введи корректное число. Попробуй еще раз.")
 
-@dp.message(lambda msg: "sl" not in user_data.get(msg.from_user.id, {}))
+@dp.message(lambda message: "sl" not in user_data.get(message.from_user.id, {}))
 async def sl_handler(message: types.Message):
     try:
         user_data[message.from_user.id]["sl"] = float(message.text)
@@ -60,7 +61,7 @@ async def sl_handler(message: types.Message):
     except ValueError:
         await message.answer("Неверный формат SL. Пожалуйста, введи числовое значение.")
 
-@dp.message(lambda msg: "tp" not in user_data.get(msg.from_user.id, {}))
+@dp.message(lambda message: "tp" not in user_data.get(message.from_user.id, {}))
 async def tp_handler(message: types.Message):
     try:
         user_data[message.from_user.id]["tp"] = float(message.text)
@@ -83,7 +84,7 @@ async def tp_handler(message: types.Message):
         if message.from_user.id in user_data:
             del user_data[message.from_user.id]
 
-@dp.message(lambda message: message.text == new_calculation_button.text)
+@dp.message(Text(text=new_calculation_button.text))
 async def new_calculation_handler(message: types.Message):
     await start_handler(message)
 
